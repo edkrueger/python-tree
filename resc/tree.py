@@ -47,3 +47,25 @@ class Tree:
                 stack.append(child)
 
         return False
+
+    def find_steps_from_root(self):
+        """Finds and sets the steps_from_root attribute for each node.
+        Only works on non-circular trees."""
+
+        if self.is_circular():
+            raise ValueError("Cannot call compute_steps_from_root on a circular Tree.")
+
+        visited = set()
+        queue = []
+
+        queue.append((self, 0))
+
+        while queue:
+            node, steps = queue.pop(0)
+
+            if node.node_id not in visited:
+                visited.add(node.node_id)
+                node.steps_from_root = steps
+
+                for child in node.children:
+                    queue.append((child, steps + 1))

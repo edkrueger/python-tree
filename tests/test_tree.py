@@ -1,5 +1,6 @@
 """Tests tree.py"""
 
+import pytest
 from resc.tree import Tree
 
 
@@ -38,3 +39,24 @@ def test_is_circular():
     assert non_circular_tree.is_circular() is False
     circular_tree = Tree.from_dict({"a": {"b": {}, "c": {"a": {}}}})
     assert circular_tree.is_circular() is True
+
+
+def test_find_steps_from_root():
+    """Tests if Tree.find_steps_from_root."""
+
+    tree = Tree.from_dict({"a": {"b": {"d": {}}, "c": {"e": {"f": {}}}}})
+    tree.find_steps_from_root()
+
+    steps_lookup = {}
+    tree.visit_all(lambda e: steps_lookup.update({e.node_id: e.steps_from_root}))
+    assert steps_lookup["a"] == 0
+    assert steps_lookup["b"] == 1
+    assert steps_lookup["c"] == 1
+    assert steps_lookup["d"] == 2
+    assert steps_lookup["e"] == 2
+    assert steps_lookup["f"] == 3
+
+    circular_tree = Tree.from_dict({"a": {"b": {}, "c": {"a": {}}}})
+
+    with pytest.raises(ValueError):
+        circular_tree.find_steps_from_root()
