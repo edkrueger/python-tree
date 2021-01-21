@@ -30,3 +30,18 @@ class Tree:
         self.visit(callback)
         for child in self.children:
             child.visit_all(callback)
+
+    def is_circular(self):
+        """Checks if a tree is circular."""
+        visited = set()
+        stack = []
+
+        stack.append(self)
+
+        while stack:
+            node = stack.pop()
+            if node.node_id in visited:
+                return True
+            visited.add(node.node_id)
+            for child in node.children:
+                stack.append(child)
