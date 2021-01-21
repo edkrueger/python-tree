@@ -12,6 +12,8 @@ class Tree:
 
         self.node_id = node_id
         self.children = children
+        self.steps_from_root = None
+        self.steps_from_leaf = None
 
     @classmethod
     def from_dict(cls, tree_dict):
@@ -69,3 +71,30 @@ class Tree:
 
                 for child in node.children:
                     queue.append((child, steps + 1))
+
+    def _find_steps_from_leaf(self):
+        """Finds and sets steps_from_leaf for each node in a non-circular tree.
+        steps_from_leaf is the minimum number of steps form a leaf."""
+
+        if self.children == []:
+            self.steps_from_leaf = 0
+
+        else:
+
+            children_steps = []
+
+            for child in self.children:
+                child._find_steps_from_leaf()  # pylint: disable=protected-access
+                children_steps.append(child.steps_from_leaf)
+
+            self.steps_from_leaf = min(children_steps) + 1
+
+    def find_steps_from_leaf(self):
+        """Finds and sets steps_from_leaf for each node.
+        steps_from_leaf is the minimum number of steps form a leaf.
+        Only works on non-circular trees."""
+
+        if self.is_circular():
+            raise ValueError("Cannot call compute_steps_from_root on a circular Tree.")
+
+        self._find_steps_from_leaf()

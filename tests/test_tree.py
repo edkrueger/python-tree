@@ -60,3 +60,24 @@ def test_find_steps_from_root():
 
     with pytest.raises(ValueError):
         circular_tree.find_steps_from_root()
+
+
+def test_find_steps_from_leaf():
+    """Tests if Tree.find_steps_from_root."""
+
+    tree = Tree.from_dict({"a": {"b": {"d": {}}, "c": {"e": {"f": {}}}}})
+    tree.find_steps_from_leaf()
+
+    steps_lookup = {}
+    tree.visit_all(lambda e: steps_lookup.update({e.node_id: e.steps_from_leaf}))
+    assert steps_lookup["a"] == 2
+    assert steps_lookup["b"] == 1
+    assert steps_lookup["c"] == 2
+    assert steps_lookup["d"] == 0
+    assert steps_lookup["e"] == 1
+    assert steps_lookup["f"] == 0
+
+    circular_tree = Tree.from_dict({"a": {"b": {}, "c": {"a": {}}}})
+
+    with pytest.raises(ValueError):
+        circular_tree.find_steps_from_leaf()
