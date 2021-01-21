@@ -45,3 +45,5 @@ class Tree:
             visited.add(node.node_id)
             for child in node.children:
                 stack.append(child)
+
+        return False

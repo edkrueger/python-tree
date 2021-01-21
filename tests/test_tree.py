@@ -35,6 +35,6 @@ def test_is_circular():
     """Tests if Tree.is_circular works."""
 
     non_circular_tree = Tree.from_dict({"a": {"b": {}, "c": {"d": {}}}})
-    assert not non_circular_tree.is_circular()
+    assert non_circular_tree.is_circular() is False
     circular_tree = Tree.from_dict({"a": {"b": {}, "c": {"a": {}}}})
-    assert circular_tree.is_circular()
+    assert circular_tree.is_circular() is True
